@@ -29,17 +29,19 @@ export class AcousticProvider {
 
   async getAccessKey(): Promise<string> {
     const url = `${this.urlEndpoint}/oauth/token`;
-    const bodyParts = [
-      'grant_type=refresh_token',
-      `client_id=${this.clientId}`,
-      `client_secret=${this.clientSecret}`,
-      `refresh_token=${this.clientRefreshToken}`,
-    ];
-    const body = bodyParts.join('');
+    const body = {
+      grant_type: 'refresh_token',
+      client_id: this.clientId,
+      client_secret: this.clientSecret,
+      refresh_token: this.clientRefreshToken,
+    };
+    const bodyString = Object.entries(body)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
     this.logger.debug(`Getting access token: ${url}`);
     const proxy = process.env.HTTP_PROXY;
     const response = await this.limiter.schedule(() =>
-      needle('post', url, body, {
+      needle('post', url, bodyString, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
