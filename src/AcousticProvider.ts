@@ -37,12 +37,13 @@ export class AcousticProvider {
     ];
     const body = bodyParts.join('');
     this.logger.debug(`Getting access token: ${url}`);
+    const proxy = process.env.HTTP_PROXY;
     const response = await this.limiter.schedule(() =>
       needle('post', url, body, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        proxy: 'http://localhost:3128', // todo: remove
+        proxy,
       })
     );
     if (response.statusCode === 200) {
