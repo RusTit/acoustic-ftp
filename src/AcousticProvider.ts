@@ -9,6 +9,7 @@ import {
   GetExportFromDatabaseModel,
   ExportResponseModel,
   CommonGetXmlModel,
+  JobStatusResponseModel,
 } from './AcousticModels';
 
 const LIMITER_OPTIONS: Bottleneck.ConstructorOptions = {
@@ -82,12 +83,12 @@ export class AcousticProvider {
   async GetJobStatus(
     accessToken: AccessToken,
     dataModel: CommonGetXmlModel
-  ): Promise<void> {
+  ): Promise<JobStatusResponseModel> {
     const response = await this.runXmlRequest(
       accessToken,
       dataModel.getXmlModel()
     );
-    return response.body;
+    return JobStatusResponseModel.Parse(response.body);
   }
 
   async getAccessKey(): Promise<AccessToken> {

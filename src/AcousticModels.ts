@@ -93,6 +93,32 @@ export type ExportListType = {
   EXPORT_COLUMNS?: Column[];
 };
 
+export class JobStatusResponseModel {
+  public readonly JOB_ID: number;
+  public readonly JOB_STATUS: string;
+  public readonly JOB_DESCRIPTION: string;
+  public readonly PARAMETERS: any[];
+
+  constructor(data: any) {
+    if (data?.Envelope?.Body?.RESULT?.SUCCESS !== 'TRUE') {
+      throw new ParseError(`Invalid export response: ${JSON.stringify(data)}`);
+    }
+    const { RESULT } = data.Envelope.Body;
+    this.JOB_ID = Number.parseInt(RESULT.JOB_ID);
+    this.JOB_STATUS = RESULT.JOB_STATUS;
+    this.JOB_DESCRIPTION = RESULT.JOB_DESCRIPTION;
+    this.PARAMETERS = RESULT.PARAMETERS;
+  }
+
+  static async Parse(rawData: string): Promise<JobStatusResponseModel> {
+    const parser = new Parser({
+      explicitArray: false,
+    });
+    const data = await parser.parseStringPromise(rawData);
+    return new JobStatusResponseModel(data);
+  }
+}
+
 export class ExportResponseModel {
   public readonly JobId: number;
   public readonly FilePath: string;

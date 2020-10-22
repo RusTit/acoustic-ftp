@@ -26,6 +26,13 @@ const main = async () => {
   );
   const token = await provider.getAccessKey();
   logger.info(`Token: ${token}`);
+
+  // testing job id
+  const jobStatusTesting = await provider.GetJobStatus(
+    token,
+    new GetJobStatus(173439829)
+  );
+
   const getDataBases = await provider.getDatabaseList(
     token,
     new GetListDataBaseModel(1, ListTypeEnum.Databases)
