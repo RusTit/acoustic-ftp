@@ -6,6 +6,12 @@ import {
   URL_ENDPOINT,
 } from './env-vars';
 import { AcousticProvider } from './AcousticProvider';
+import {
+  GetListDataBaseModel,
+  ListTypeEnum,
+  GetExportFromDatabaseModel,
+  GetJobStatus,
+} from './AcousticModels';
 
 const logger = LoggerFactory('src/main.ts');
 
@@ -20,6 +26,23 @@ const main = async () => {
   );
   const token = await provider.getAccessKey();
   logger.info(`Token: ${token}`);
+  const getDataBases = await provider.getDatabaseList(
+    token,
+    new GetListDataBaseModel(1, ListTypeEnum.Databases)
+  );
+  const [first] = getDataBases.DatabaseList;
+  const exportModel = new GetExportFromDatabaseModel([
+    {
+      LIST_ID: first.ID,
+      EXPORT_TYPE: 'ALL',
+      EXPORT_FORMAT: 'CSV',
+      ADD_TO_STORED_FILES: undefined, // enough to appear in xml
+    },
+  ]);
+  const result = await provider.runExport(token, exportModel);
+  const getJobStatusModel = new GetJobStatus(result.JobId);
+  // 173439829
+  const jobStatus = await provider.GetJobStatus(token, getJobStatusModel);
 };
 
 main().catch(e => logger.error(e));

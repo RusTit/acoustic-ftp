@@ -1,7 +1,15 @@
-import needle, { NeedleOptions } from 'needle';
+import needle, { NeedleOptions, NeedleResponse } from 'needle';
 import Bottleneck from 'bottleneck';
 import { Logger } from 'log4js';
 import { LoggerFactory } from './logger';
+import {
+  AccessToken,
+  GetListDataBaseModel,
+  ListDataBaseResponseModel,
+  GetExportFromDatabaseModel,
+  ExportResponseModel,
+  CommonGetXmlModel,
+} from './AcousticModels';
 
 const LIMITER_OPTIONS: Bottleneck.ConstructorOptions = {
   // reservoir: 15, // initial value
@@ -27,7 +35,62 @@ export class AcousticProvider {
     this.logger = LoggerFactory('src/AcousticProvider.ts');
   }
 
-  async getAccessKey(): Promise<string> {
+  async getDatabaseList(
+    accessToken: AccessToken,
+    dataModel: GetListDataBaseModel
+  ): Promise<ListDataBaseResponseModel> {
+    const response = await this.runXmlRequest(
+      accessToken,
+      dataModel.getXmlModel()
+    );
+    return ListDataBaseResponseModel.Parse(response.body);
+  }
+
+  async runXmlRequest(
+    accessToken: AccessToken,
+    bodyString: string
+  ): Promise<NeedleResponse> {
+    const url = `${this.urlEndpoint}/XMLAPI`;
+    const response = await this.limiter.schedule(() =>
+      needle('post', url, bodyString, {
+        headers: {
+          'Content-Type': 'text/xml;charset=utf-8',
+          Authorization: `Bearer ${accessToken.access_token}`,
+        },
+        parse: false,
+      } as NeedleOptions)
+    );
+    if (response.statusCode === 200) {
+      return response;
+    }
+    throw new Error(
+      `Invalid http code: ${response.statusCode} with body: ${response.body}`
+    );
+  }
+
+  async runExport(
+    accessToken: AccessToken,
+    dataModel: GetExportFromDatabaseModel
+  ): Promise<ExportResponseModel> {
+    const response = await this.runXmlRequest(
+      accessToken,
+      dataModel.getXmlModel()
+    );
+    return ExportResponseModel.Parse(response.body);
+  }
+
+  async GetJobStatus(
+    accessToken: AccessToken,
+    dataModel: CommonGetXmlModel
+  ): Promise<void> {
+    const response = await this.runXmlRequest(
+      accessToken,
+      dataModel.getXmlModel()
+    );
+    return response.body;
+  }
+
+  async getAccessKey(): Promise<AccessToken> {
     const url = `${this.urlEndpoint}/oauth/token`;
     const body = {
       grant_type: 'refresh_token',
@@ -49,7 +112,18 @@ export class AcousticProvider {
       } as NeedleOptions)
     );
     if (response.statusCode === 200) {
-      return response.body;
+      const {
+        access_token,
+        token_type,
+        refresh_token,
+        expires_in,
+      } = response.body;
+      return new AccessToken(
+        access_token,
+        token_type,
+        refresh_token,
+        expires_in
+      );
     }
     throw new Error(
       `Invalid http code: ${response.statusCode} with body: ${response.body}`

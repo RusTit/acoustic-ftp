@@ -21,13 +21,15 @@
   "homepage": "https://github.com/RusTit/acoustic-ftp#readme",
   "dependencies": {
     "@types/node": "^14.14.2",
+    "@types/xml2js": "^0.4.5",
     "bottleneck": "^2.19.5",
     "dotenv": "^8.2.0",
     "env-var": "^6.3.0",
     "log4js": "^6.3.0",
     "needle": "^2.5.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@types/needle": "^2.5.1",
