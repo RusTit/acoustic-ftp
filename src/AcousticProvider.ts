@@ -46,7 +46,7 @@ export class AcousticProvider {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         proxy,
-      })
+      } as NeedleOptions)
     );
     if (response.statusCode === 200) {
       return response.body;
