@@ -93,9 +93,16 @@ export type ExportListType = {
   EXPORT_COLUMNS?: Column[];
 };
 
+export type JobStatusLiteral =
+  | 'WAITING'
+  | 'RUNNING'
+  | 'CANCELLED'
+  | 'ERROR'
+  | 'COMPLETE';
+
 export class JobStatusResponseModel {
   public readonly JOB_ID: number;
-  public readonly JOB_STATUS: string;
+  public readonly JOB_STATUS: JobStatusLiteral;
   public readonly JOB_DESCRIPTION: string;
   public readonly PARAMETERS: any[];
 
