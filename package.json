@@ -9,7 +9,10 @@
     "prestart": "npm run build",
     "start": "node dist/main.js",
     "test": "jest test",
-    "docs": "typedoc --mode file --out docs src"
+    "docs": "typedoc --out docs src",
+    "docs:clean": "rimraf docs",
+    "github:pages:nojekyll": "cp custom/.nojekyll docs/.nojekyll",
+    "github:pages": "yarn docs:clean && yarn docs && yarn github:pages:nojekyll"
   },
   "repository": {
     "type": "git",
