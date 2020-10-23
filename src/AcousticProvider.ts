@@ -10,6 +10,7 @@ import {
   ExportResponseModel,
   CommonGetXmlModel,
   JobStatusResponseModel,
+  GetJobStatusModel,
 } from './AcousticModels';
 
 const LIMITER_OPTIONS: Bottleneck.ConstructorOptions = {
@@ -40,18 +41,16 @@ export class AcousticProvider {
     accessToken: AccessToken,
     dataModel: GetListDataBaseModel
   ): Promise<ListDataBaseResponseModel> {
-    const response = await this.runXmlRequest(
-      accessToken,
-      dataModel.getXmlModel()
-    );
+    const response = await this.runXmlRequest(accessToken, dataModel);
     return ListDataBaseResponseModel.Parse(response.body);
   }
 
   async runXmlRequest(
     accessToken: AccessToken,
-    bodyString: string
+    model: CommonGetXmlModel
   ): Promise<NeedleResponse> {
     const url = `${this.urlEndpoint}/XMLAPI`;
+    const bodyString = model.getXmlModel();
     const response = await this.limiter.schedule(() =>
       needle('post', url, bodyString, {
         headers: {
@@ -73,21 +72,15 @@ export class AcousticProvider {
     accessToken: AccessToken,
     dataModel: GetExportFromDatabaseModel
   ): Promise<ExportResponseModel> {
-    const response = await this.runXmlRequest(
-      accessToken,
-      dataModel.getXmlModel()
-    );
+    const response = await this.runXmlRequest(accessToken, dataModel);
     return ExportResponseModel.Parse(response.body);
   }
 
   async GetJobStatus(
     accessToken: AccessToken,
-    dataModel: CommonGetXmlModel
+    dataModel: GetJobStatusModel
   ): Promise<JobStatusResponseModel> {
-    const response = await this.runXmlRequest(
-      accessToken,
-      dataModel.getXmlModel()
-    );
+    const response = await this.runXmlRequest(accessToken, dataModel);
     return JobStatusResponseModel.Parse(response.body);
   }
 

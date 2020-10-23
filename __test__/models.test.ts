@@ -1,7 +1,7 @@
 import {
   AccessToken, ExportResponseModel,
   GetExportFromDatabaseModel,
-  GetJobStatus,
+  GetJobStatusModel,
   GetListDataBaseModel, JobStatusResponseModel, ListDataBaseResponseModel,
   ListTypeEnum,
   VisibilityEnum,
@@ -50,7 +50,7 @@ describe('model tests', () => {
     expect(strResult).toBe(testCase);
   });
   it('check GetJobStatus xml string', () => {
-    const model = new GetJobStatus(123);
+    const model = new GetJobStatusModel(123);
     const strResult = model.getXmlModel();
     const testCase =
       `<Envelope>

@@ -204,7 +204,7 @@ export class ListDataBaseResponseModel {
   }
 }
 
-export class GetJobStatus extends CommonGetXmlModel {
+export class GetJobStatusModel extends CommonGetXmlModel {
   constructor(public readonly JOB_ID: number) {
     super();
   }

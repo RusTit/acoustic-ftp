@@ -10,7 +10,7 @@ import {
   GetListDataBaseModel,
   ListTypeEnum,
   GetExportFromDatabaseModel,
-  GetJobStatus,
+  GetJobStatusModel,
 } from './AcousticModels';
 
 const logger = LoggerFactory('src/main.ts');
@@ -30,7 +30,7 @@ const main = async () => {
   // testing job id
   const jobStatusTesting = await provider.GetJobStatus(
     token,
-    new GetJobStatus(173439829)
+    new GetJobStatusModel(173439829)
   );
 
   const getDataBases = await provider.getDatabaseList(
@@ -47,7 +47,7 @@ const main = async () => {
     },
   ]);
   const result = await provider.runExport(token, exportModel);
-  const getJobStatusModel = new GetJobStatus(result.JobId);
+  const getJobStatusModel = new GetJobStatusModel(result.JobId);
   // 173439829
   const jobStatus = await provider.GetJobStatus(token, getJobStatusModel);
 };
