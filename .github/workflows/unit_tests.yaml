@@ -26,4 +26,5 @@ jobs:
       - name: Run auto tests
         run: |
           npm install -g yarn
+          yarn install
           yarn test
