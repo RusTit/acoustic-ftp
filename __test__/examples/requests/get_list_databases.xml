@@ -1,0 +1,8 @@
+<Envelope>
+  <Body>
+    <GetLists>
+      <VISIBILITY>1</VISIBILITY>
+      <LIST_TYPE>0</LIST_TYPE>
+    </GetLists>
+  </Body>
+</Envelope>

@@ -1,0 +1,7 @@
+<Envelope>
+  <Body>
+    <GetJobStatus>
+      <JOB_ID>123</JOB_ID>
+    </GetJobStatus>
+  </Body>
+</Envelope>
