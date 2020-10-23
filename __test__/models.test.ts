@@ -1,4 +1,10 @@
-import { VisibilityEnum, ListTypeEnum, GetExportFromDatabaseModel } from '../src/AcousticModels';
+import {
+  GetExportFromDatabaseModel,
+  GetJobStatus,
+  GetListDataBaseModel,
+  ListTypeEnum,
+  VisibilityEnum,
+} from '../src/AcousticModels';
 
 /**
  * Two minutes for jest test case.
@@ -27,7 +33,7 @@ describe('model tests', () => {
     const model = new GetExportFromDatabaseModel([{
       LIST_ID: 123,
       EXPORT_TYPE: 'ALL',
-      EXPORT_FORMAT: 'CSV'
+      EXPORT_FORMAT: 'CSV',
     }]);
     const strResult = model.getXmlModel();
     const testCase =
@@ -38,6 +44,33 @@ describe('model tests', () => {
       <EXPORT_TYPE>ALL</EXPORT_TYPE>
       <EXPORT_FORMAT>CSV</EXPORT_FORMAT>
     </ExportList>
+  </Body>
+</Envelope>`;
+    expect(strResult).toBe(testCase);
+  });
+  it('check GetJobStatus xml string', () => {
+    const model = new GetJobStatus(123);
+    const strResult = model.getXmlModel();
+    const testCase =
+      `<Envelope>
+  <Body>
+    <GetJobStatus>
+      <JOB_ID>123</JOB_ID>
+    </GetJobStatus>
+  </Body>
+</Envelope>`;
+    expect(strResult).toBe(testCase);
+  });
+  it('check GetListDataBaseModel xml string', () => {
+    const model = new GetListDataBaseModel(VisibilityEnum.Shared, ListTypeEnum.Databases);
+    const strResult = model.getXmlModel();
+    const testCase =
+      `<Envelope>
+  <Body>
+    <GetLists>
+      <VISIBILITY>1</VISIBILITY>
+      <LIST_TYPE>0</LIST_TYPE>
+    </GetLists>
   </Body>
 </Envelope>`;
     expect(strResult).toBe(testCase);
