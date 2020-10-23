@@ -1,9 +1,6 @@
 name: Node.js Unit tests
 
-on:
-  push:
-    branches-ignore:
-      - master
+on: push
 env:
   NODE_ENV: development
 jobs:
