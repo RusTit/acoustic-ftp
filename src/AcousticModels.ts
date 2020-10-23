@@ -118,7 +118,7 @@ export class JobStatusResponseModel {
     this.JOB_ID = Number.parseInt(RESULT.JOB_ID);
     this.JOB_STATUS = RESULT.JOB_STATUS;
     this.JOB_DESCRIPTION = RESULT.JOB_DESCRIPTION;
-    this.PARAMETERS = RESULT.PARAMETERS;
+    this.PARAMETERS = RESULT.PARAMETERS.PARAMETER;
   }
 
   static async Parse(rawData: string): Promise<JobStatusResponseModel> {

@@ -1,8 +1,8 @@
 import {
-  AccessToken,
+  AccessToken, ExportResponseModel,
   GetExportFromDatabaseModel,
   GetJobStatus,
-  GetListDataBaseModel, ListDataBaseResponseModel,
+  GetListDataBaseModel, JobStatusResponseModel, ListDataBaseResponseModel,
   ListTypeEnum,
   VisibilityEnum,
 } from '../src/AcousticModels';
@@ -219,5 +219,128 @@ describe('model tests', () => {
     expect(accessToken.expires_in).toBe(expire_in);
     await (new Promise(resolve => setTimeout(resolve, 2000)));
     expect(accessToken.isOutDated()).toBe(true);
+  });
+  it('check ExportResponseModel parsing', async () => {
+    const rawXml =
+      `<Envelope>
+    <Body>
+        <RESULT>
+            <SUCCESS>TRUE</SUCCESS>
+            <JOB_ID>173476817</JOB_ID>
+            <FILE_PATH>/download/Copy of WCA Global Database  10.15.2020 - All - Oct 22 2020 11-17-01 PM.CSV</FILE_PATH>
+        </RESULT>
+    </Body>
+</Envelope>`;
+    const result = await ExportResponseModel.Parse(rawXml);
+    expect(result.JobId).toBe(173476817);
+    expect(result.FilePath).toBe('/download/Copy of WCA Global Database  10.15.2020 - All - Oct 22 2020 11-17-01 PM.CSV');
+  });
+  it('check JobStatusResponseModel parsing', async () => {
+    const rawXml =
+      `<Envelope>
+    <Body>
+        <RESULT>
+            <SUCCESS>TRUE</SUCCESS>
+            <JOB_ID>173476817</JOB_ID>
+            <JOB_STATUS>ERROR</JOB_STATUS>
+            <JOB_DESCRIPTION>Exporting all contact source data, Copy of WCA Global Database  10.15.2020</JOB_DESCRIPTION>
+            <PARAMETERS>
+                <PARAMETER>
+                    <NAME>FILE_ENCODING</NAME>
+                    <VALUE>utf-8</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>USE_CREATED_DATE</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>MAX_RANGE</NAME>
+                    <VALUE/>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>INCLUDE_LEAD_SOURCE</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>LIST_DATE_FORMAT_SAVE</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>END_DATE</NAME>
+                    <VALUE/>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>START_DATE</NAME>
+                    <VALUE/>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>KEEP_IN_FTP_DOWNLOAD_DIRECTORY</NAME>
+                    <VALUE>true</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>ERROR_FILE_NAME</NAME>
+                    <VALUE>173476817.err</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>EMAIL</NAME>
+                    <VALUE/>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>LIST_NAME</NAME>
+                    <VALUE>Copy of WCA Global Database  10.15.2020</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>EXPORT_FORMAT</NAME>
+                    <VALUE>0</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>KEEP_IN_STORED_FILES</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>ENCODE_AS_MD5</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>LIST_ID</NAME>
+                    <VALUE>40462047</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>INCLUDE_LIST_ID_IN_FILE</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>LIST_DATE_FORMAT</NAME>
+                    <VALUE/>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>FILENAME</NAME>
+                    <VALUE>Copy of WCA Global Database  10.15.2020 - All - Oct 22 2020 11-17-01 PM.CSV</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>RESULTS_FILE_NAME</NAME>
+                    <VALUE>173476817.res</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>EXPORT_TYPE</NAME>
+                    <VALUE>0</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>INCLUDE_RECIPIENT_ID</NAME>
+                    <VALUE>false</VALUE>
+                </PARAMETER>
+                <PARAMETER>
+                    <NAME>MIN_RANGE</NAME>
+                    <VALUE/>
+                </PARAMETER>
+            </PARAMETERS>
+        </RESULT>
+    </Body>
+</Envelope>`;
+    const result = await JobStatusResponseModel.Parse(rawXml);
+    expect(result.JOB_ID).toBe(173476817);
+    expect(result.JOB_STATUS).toBe('ERROR');
+    expect(result.JOB_DESCRIPTION).toBe('Exporting all contact source data, Copy of WCA Global Database  10.15.2020');
+    expect(result.PARAMETERS.length).toBe(22);
   });
 });
