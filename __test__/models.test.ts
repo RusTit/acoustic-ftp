@@ -1,4 +1,4 @@
-import { VisibilityEnum, ListTypeEnum } from '../src/AcousticModels';
+import { VisibilityEnum, ListTypeEnum, GetExportFromDatabaseModel } from '../src/AcousticModels';
 
 /**
  * Two minutes for jest test case.
@@ -22,5 +22,24 @@ describe('model tests', () => {
     expect(ListTypeEnum.SuppressionLists).toBe(13);
     expect(ListTypeEnum.RelationalTables).toBe(15);
     expect(ListTypeEnum.ContactLists).toBe(18);
+  });
+  it('check GetExportFromDatabaseModel xml string', () => {
+    const model = new GetExportFromDatabaseModel([{
+      LIST_ID: 123,
+      EXPORT_TYPE: 'ALL',
+      EXPORT_FORMAT: 'CSV'
+    }]);
+    const strResult = model.getXmlModel();
+    const testCase =
+      `<Envelope>
+  <Body>
+    <ExportList>
+      <LIST_ID>123</LIST_ID>
+      <EXPORT_TYPE>ALL</EXPORT_TYPE>
+      <EXPORT_FORMAT>CSV</EXPORT_FORMAT>
+    </ExportList>
+  </Body>
+</Envelope>`;
+    expect(strResult).toBe(testCase);
   });
 });

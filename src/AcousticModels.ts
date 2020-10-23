@@ -16,7 +16,11 @@ export enum ListTypeEnum {
   ContactLists = 18,
 }
 
-export type INCLUDE_ALL_LIST_LITERAL = 'True' | 'False';
+export type TODO_ANY = any;
+
+export type BOOL_XML_LITERAL = 'True' | 'False';
+
+export type INCLUDE_ALL_LIST_LITERAL = BOOL_XML_LITERAL;
 
 export class ParseError extends Error {
   constructor(message: string) {
@@ -60,7 +64,7 @@ export type CommonDataType = {
 
 export abstract class CommonGetXmlModel {
   public readonly builder: Builder;
-  constructor() {
+  protected constructor() {
     this.builder = new Builder({
       headless: true,
     });
@@ -104,9 +108,9 @@ export class JobStatusResponseModel {
   public readonly JOB_ID: number;
   public readonly JOB_STATUS: JobStatusLiteral;
   public readonly JOB_DESCRIPTION: string;
-  public readonly PARAMETERS: any[];
+  public readonly PARAMETERS: unknown[];
 
-  constructor(data: any) {
+  constructor(data: TODO_ANY) {
     if (data?.Envelope?.Body?.RESULT?.SUCCESS !== 'TRUE') {
       throw new ParseError(`Invalid export response: ${JSON.stringify(data)}`);
     }
@@ -130,7 +134,7 @@ export class ExportResponseModel {
   public readonly JobId: number;
   public readonly FilePath: string;
 
-  constructor(data: any) {
+  constructor(data: TODO_ANY) {
     if (data?.Envelope?.Body?.RESULT?.SUCCESS !== 'TRUE') {
       throw new ParseError(`Invalid export response: ${JSON.stringify(data)}`);
     }
@@ -163,7 +167,7 @@ export class GetExportFromDatabaseModel extends CommonGetXmlModel {
 export class ListDataBaseResponseModel {
   public readonly DatabaseList: DatabaseResponseObject[];
 
-  constructor(data: any) {
+  constructor(data: TODO_ANY) {
     if (
       data?.Envelope?.Body?.RESULT?.SUCCESS !== 'TRUE' ||
       typeof data?.Envelope?.Body?.RESULT?.LIST === 'undefined'
@@ -173,7 +177,7 @@ export class ListDataBaseResponseModel {
     const list = Array.isArray(data.Envelope.Body.RESULT.LIST) // xml2js parsing minor issue
       ? data?.Envelope?.Body?.RESULT?.LIST
       : [data?.Envelope?.Body?.RESULT?.LIST];
-    this.DatabaseList = list.map((item: any) => {
+    this.DatabaseList = list.map((item: TODO_ANY) => {
       item.ID = Number.parseInt(item.ID);
       item.TYPE = Number.parseInt(item.TYPE);
       item.SIZE = Number.parseInt(item.SIZE);
@@ -231,7 +235,7 @@ export class GetListDataBaseModel extends CommonGetXmlModel {
       VISIBILITY: this.VISIBILITY,
       LIST_TYPE: this.LIST_TYPE,
     };
-    const GetLists: any = data.Envelope.Body.GetLists;
+    const GetLists: TODO_ANY = data.Envelope.Body.GetLists;
     if (typeof this.FOLDER_ID !== 'undefined') {
       GetLists.FOLDER_ID = this.FOLDER_ID;
     }
