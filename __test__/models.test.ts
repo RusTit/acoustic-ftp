@@ -1,4 +1,5 @@
 import {
+  AccessToken,
   GetExportFromDatabaseModel,
   GetJobStatus,
   GetListDataBaseModel, ListDataBaseResponseModel,
@@ -31,7 +32,7 @@ describe('model tests', () => {
   });
   it('check GetExportFromDatabaseModel xml string', () => {
     const model = new GetExportFromDatabaseModel([{
-      LIST_ID: 123,
+      LIST_ID: 40462047,
       EXPORT_TYPE: 'ALL',
       EXPORT_FORMAT: 'CSV',
     }]);
@@ -40,7 +41,7 @@ describe('model tests', () => {
       `<Envelope>
   <Body>
     <ExportList>
-      <LIST_ID>123</LIST_ID>
+      <LIST_ID>40462047</LIST_ID>
       <EXPORT_TYPE>ALL</EXPORT_TYPE>
       <EXPORT_FORMAT>CSV</EXPORT_FORMAT>
     </ExportList>
@@ -195,5 +196,28 @@ describe('model tests', () => {
     expect(first.SIZE).toBe(0);
     expect(first.NUM_OPT_OUTS).toBe(0);
     expect(first.NUM_UNDELIVERABLE).toBe(0);
+    expect(first.LAST_MODIFIED).toBe('06/01/16 11:18 AM');
+    expect(first.VISIBILITY).toBe(VisibilityEnum.Shared);
+    expect(first.PARENT_NAME).toBe('');
+    expect(first.USER_ID).toBe('161cf73-12b9c2ce7d3-4f4749e15ce6d7a21b02ab08b9b7921c');
+    expect(first.PARENT_FOLDER_ID).toBe(6849213);
+    expect(first.IS_FOLDER).toBe(true);
+    expect(first.FLAGGED_FOR_BACKUP).toBe(false);
+    expect(first.SUPPRESSION_LIST_ID).toBe(0);
+    expect(first.IS_DATABASE_TEMPLATE).toBe(false);
+  });
+  it('check access token object fields', async () => {
+    const access_token = 'access_token-abcd';
+    const token_type = 'token_type-abcd';
+    const refresh_token = 'refresh_token-abcd';
+    const expire_in = 1;
+    const accessToken = new AccessToken(access_token, token_type, refresh_token, expire_in);
+    expect(accessToken.isOutDated()).toBe(false);
+    expect(accessToken.access_token).toBe(access_token);
+    expect(accessToken.token_type).toBe(token_type);
+    expect(accessToken.refresh_token).toBe(refresh_token);
+    expect(accessToken.expires_in).toBe(expire_in);
+    await (new Promise(resolve => setTimeout(resolve, 2000)));
+    expect(accessToken.isOutDated()).toBe(true);
   });
 });
