@@ -9,7 +9,7 @@
     "prestart": "npm run build",
     "start": "node dist/main.js",
     "test": "jest test",
-    "docs": "typedoc --out docs src"
+    "docs": "typedoc --mode file --out docs src"
   },
   "repository": {
     "type": "git",
