@@ -84,3 +84,6 @@ output/
 
 # temp files
 /*.csv#
+
+# Documentation
+/docs
