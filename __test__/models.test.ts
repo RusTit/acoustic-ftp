@@ -34,20 +34,13 @@ export async function LoadExample(name: string, type: ExampleType): Promise<stri
   const content = await fs.readFile(fullPath, 'utf-8');
   return content.trimEnd(); // remove new line created by ide.
 }
-/**
- * Two minutenames for jest test case.
- */
-const LONG_ASYNC_DELAY = 120000;
 
 describe('model tests', () => {
-  beforeEach(() => {
-    jest.setTimeout(LONG_ASYNC_DELAY);
-  });
-  it('check VisibilityEnum values', () => {
+  test('check VisibilityEnum values', () => {
     expect(VisibilityEnum.Private).toBe(0);
     expect(VisibilityEnum.Shared).toBe(1);
   });
-  it('check ListTypeEnum values', () => {
+  test('check ListTypeEnum values', () => {
     expect(ListTypeEnum.Databases).toBe(0);
     expect(ListTypeEnum.Queries).toBe(1);
     expect(ListTypeEnum.DatabasesContactListsQueries).toBe(2);
@@ -57,7 +50,7 @@ describe('model tests', () => {
     expect(ListTypeEnum.RelationalTables).toBe(15);
     expect(ListTypeEnum.ContactLists).toBe(18);
   });
-  it('check GetExportFromDatabaseModel xml string', async () => {
+  test('check GetExportFromDatabaseModel xml string', async () => {
     const model = new GetExportFromDatabaseModel([{
       LIST_ID: 40462047,
       EXPORT_TYPE: 'ALL',
@@ -67,19 +60,19 @@ describe('model tests', () => {
     const testCase = await LoadExample('get_export_from_database', ExampleType.Request);
     expect(strResult).toBe(testCase);
   });
-  it('check GetJobStatusModel xml string', async  () => {
+  test('check GetJobStatusModel xml string', async  () => {
     const model = new GetJobStatusModel(123);
     const strResult = model.getXmlModel();
     const testCase = await LoadExample('get_job_status', ExampleType.Request);
     expect(strResult).toBe(testCase);
   });
-  it('check GetListDataBaseModel xml string', async () => {
+  test('check GetListDataBaseModel xml string', async () => {
     const model = new GetListDataBaseModel(VisibilityEnum.Shared, ListTypeEnum.Databases);
     const strResult = model.getXmlModel();
     const testCase = await LoadExample('get_list_databases', ExampleType.Request);
     expect(strResult).toBe(testCase);
   });
-  it('check ListDataBaseResponseModel parsing', async () => {
+  test('check ListDataBaseResponseModel parsing', async () => {
     const rawXml = await LoadExample('list_databases_response', ExampleType.Response);
     const result = await ListDataBaseResponseModel.Parse(rawXml);
     expect(result.DatabaseList.length).toBe(6);
@@ -100,7 +93,7 @@ describe('model tests', () => {
     expect(first.SUPPRESSION_LIST_ID).toBe(0);
     expect(first.IS_DATABASE_TEMPLATE).toBe(false);
   });
-  it('check access token object fields', async () => {
+  test('check access token object fields', async () => {
     const access_token = 'access_token-abcd';
     const token_type = 'token_type-abcd';
     const refresh_token = 'refresh_token-abcd';
@@ -114,13 +107,13 @@ describe('model tests', () => {
     await (new Promise(resolve => setTimeout(resolve, 2000)));
     expect(accessToken.isOutDated()).toBe(true);
   });
-  it('check ExportResponseModel parsing', async () => {
+  test('check ExportResponseModel parsing', async () => {
     const rawXml = await LoadExample('export_result_response', ExampleType.Response);
     const result = await ExportResponseModel.Parse(rawXml);
     expect(result.JobId).toBe(173476817);
     expect(result.FilePath).toBe('/download/Copy of WCA Global Database  10.15.2020 - All - Oct 22 2020 11-17-01 PM.CSV');
   });
-  it('check JobStatusResponseModel parsing', async () => {
+  test('check JobStatusResponseModel parsing', async () => {
     const rawXml = await LoadExample('job_status_response', ExampleType.Response);
     const result = await JobStatusResponseModel.Parse(rawXml);
     expect(result.JOB_ID).toBe(173476817);
