@@ -266,6 +266,8 @@ export class AccessToken {
   }
 
   public toString(): string {
-    return `Access token: ${this.access_token} is valid: ${!this.isOutDated()}`;
+    return `Access token: ${
+      this.access_token
+    } is valid: ${!this.isOutDated()}. Expires at: ${this.expires_at.toJSON()}`;
   }
 }
