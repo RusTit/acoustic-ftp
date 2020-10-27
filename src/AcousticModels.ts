@@ -1,4 +1,5 @@
 import { Builder, Parser } from 'xml2js';
+import moment from 'moment';
 
 export enum VisibilityEnum {
   Private = 0,
@@ -79,6 +80,11 @@ export abstract class CommonGetXmlModel {
   }
 
   abstract getXmlModel(): string;
+}
+
+export function convertTimestampToStr(timestamp: moment.Moment): string {
+  // 06/25/2017 01:00:00
+  return timestamp.format('MM/DD/YYYY HH:mm:ss');
 }
 
 export type ExportListType = {

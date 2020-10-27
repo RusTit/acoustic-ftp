@@ -37,6 +37,11 @@ export class AcousticProvider {
     this.logger = LoggerFactory('src/AcousticProvider.ts');
   }
 
+  /**
+   * Get list of the databases
+   * @param accessToken
+   * @param dataModel
+   */
   async getDatabaseList(
     accessToken: AccessToken,
     dataModel: GetListDataBaseModel
