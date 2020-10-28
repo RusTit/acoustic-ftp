@@ -160,4 +160,10 @@ const main = async () => {
   }
 };
 
-main().catch(e => logger.error(e));
+function cronEntryPoint() {
+  main()
+    .catch(e => logger.error(e))
+    .finally(() => logger.info('Main is finished'));
+}
+
+cronEntryPoint();
