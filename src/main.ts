@@ -69,52 +69,58 @@ const waitForJobToFinish = async (
 
 async function getResultFromSFtp(path: string): Promise<Buffer> {
   const sftpClient = new Client();
-  const config: ConnectOptions = {
-    host: RESULT_IN_HOST,
-    port: RESULT_IN_PORT,
-    username: RESULT_IN_USERNAME,
-    password: RESULT_IN_PASSWORD,
-  };
-  logger.debug('Starting sftp connection');
-  await sftpClient.connect(config);
-  logger.debug(`SFTP connection established, downloading file: (${path})`);
-  const data = await sftpClient.get(path);
-  await sftpClient.end();
-  logger.info(`File is downloaded from the sftp: (${path})`);
-  if (typeof data === 'string') {
-    return Buffer.from(data);
+  try {
+    const config: ConnectOptions = {
+      host: RESULT_IN_HOST,
+      port: RESULT_IN_PORT,
+      username: RESULT_IN_USERNAME,
+      password: RESULT_IN_PASSWORD,
+    };
+    logger.debug('Starting sftp connection');
+    await sftpClient.connect(config);
+    logger.debug(`SFTP connection established, downloading file: (${path})`);
+    const data = await sftpClient.get(path);
+    logger.info(`File is downloaded from the sftp: (${path})`);
+    if (typeof data === 'string') {
+      return Buffer.from(data);
+    }
+    if (Buffer.isBuffer(data)) {
+      return data;
+    }
+    throw new Error('Invalid sftp usage.');
+  } finally {
+    await sftpClient.end();
   }
-  if (Buffer.isBuffer(data)) {
-    return data;
-  }
-  throw new Error('Invalid sftp usage.');
 }
 
 async function putResultToFtp(buffer: Buffer, fileName: string): Promise<void> {
   const client = new ftpClient();
-  // client.ftp.verbose = true;
-  logger.debug('Starting ftp connection');
-  await client.access({
-    host: RESULT_OUT_HOST,
-    port: RESULT_OUT_PORT,
-    user: RESULT_OUT_USERNAME,
-    password: RESULT_OUT_PASSWORD,
-    secure: RESULT_OUT_SECURE,
-    secureOptions: {
-      rejectUnauthorized: false,
-    },
-  });
-  const readableStream = new Readable({
-    read() {
-      this.push(buffer);
-      this.push(null);
-    },
-  });
-  const finalPath = `/acoustic/${fileName}`;
-  logger.debug(`Starting upload task to ftp destination (${finalPath})`);
-  await client.uploadFrom(readableStream, finalPath);
-  logger.info(`Upload task to ftp server is finished. (${finalPath})`);
-  await client.close();
+  try {
+    // client.ftp.verbose = true;
+    logger.debug('Starting ftp connection');
+    await client.access({
+      host: RESULT_OUT_HOST,
+      port: RESULT_OUT_PORT,
+      user: RESULT_OUT_USERNAME,
+      password: RESULT_OUT_PASSWORD,
+      secure: RESULT_OUT_SECURE,
+      secureOptions: {
+        rejectUnauthorized: false,
+      },
+    });
+    const readableStream = new Readable({
+      read() {
+        this.push(buffer);
+        this.push(null);
+      },
+    });
+    const finalPath = `/acoustic/${fileName}`;
+    logger.debug(`Starting upload task to ftp destination (${finalPath})`);
+    await client.uploadFrom(readableStream, finalPath);
+    logger.info(`Upload task to ftp server is finished. (${finalPath})`);
+  } finally {
+    await client.close();
+  }
 }
 
 function getCleanFilenameFromPath(path: string): string {
