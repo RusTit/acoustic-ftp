@@ -77,10 +77,10 @@ async function getResultFromSFtp(path: string): Promise<Buffer> {
   };
   logger.debug('Starting sftp connection');
   await sftpClient.connect(config);
-  logger.debug(`SFTP connection established, downloading file: ${path}`);
+  logger.debug(`SFTP connection established, downloading file: (${path})`);
   const data = await sftpClient.get(path);
   await sftpClient.end();
-  logger.info(`File is downloaded from the sftp: ${path}`);
+  logger.info(`File is downloaded from the sftp: (${path})`);
   if (typeof data === 'string') {
     return Buffer.from(data);
   }
@@ -129,7 +129,6 @@ const main = async () => {
     CLIENT_REFRESH_TOKEN,
     URL_ENDPOINT
   );
-  await putResultToFtp(Buffer.from(''), 'test');
   const token = await provider.getAccessKey();
   logger.info(`Token: ${token}`);
 
