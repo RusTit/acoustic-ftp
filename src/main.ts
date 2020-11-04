@@ -173,11 +173,11 @@ function cronEntryPoint() {
     .finally(() => logger.info('Main is finished'));
 }
 
-cronEntryPoint();
-
-const runOnInit = require.main === module;
+// const runOnInit = require.main === module;
+const runOnInit = false;
 
 const schedule = '* 0 10 * * 1';
+const timeZone = 'Europe/London';
 /**
  * timezone - https://momentjs.com/timezone/
  */
@@ -186,10 +186,13 @@ const job = new CronJob(
   cronEntryPoint,
   null,
   false,
-  'Europe/London',
+  timeZone,
   null,
   runOnInit
 );
 if (require.main === module) {
+  logger.info('This is entry point, starting the cron.');
   job.start();
+} else {
+  logger.warn(`This isn't entry point. Cron task is not started`);
 }
