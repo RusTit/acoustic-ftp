@@ -1,4 +1,5 @@
 import { LoggerFactory } from './logger';
+import { CronJob } from 'cron';
 import moment from 'moment';
 import {
   CLIENT_ID,
@@ -173,3 +174,22 @@ function cronEntryPoint() {
 }
 
 cronEntryPoint();
+
+const runOnInit = require.main === module;
+
+const schedule = '* 0 10 * * 1';
+/**
+ * timezone - https://momentjs.com/timezone/
+ */
+const job = new CronJob(
+  schedule,
+  cronEntryPoint,
+  null,
+  false,
+  'Europe/London',
+  null,
+  runOnInit
+);
+if (require.main === module) {
+  job.start();
+}
