@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RusTit/acoustic-ftp.git"
+    "url": "git+https://github.com/cclmarketing/ccl-acoustic-export"
   },
-  "author": "Russkih Anatoly <titanofdarkness@gmail.com>",
+  "author": "Marco Miduri <marcomiduri1@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RusTit/acoustic-ftp/issues"
+    "url": "https://github.com/cclmarketing/ccl-acoustic-export/issues"
   },
-  "homepage": "https://github.com/RusTit/acoustic-ftp#readme",
+  "homepage": "https://github.com/cclmarketing/ccl-acoustic-export#readme",
   "dependencies": {
     "@types/cron": "^1.7.2",
     "@types/node": "^14.14.2",
