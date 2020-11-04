@@ -124,6 +124,23 @@ async function putResultToFtp(buffer: Buffer, fileName: string): Promise<void> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function retryHelper<T extends unknown[], R>(
+  fn: (...args: T) => Promise<R>,
+  retryCount = 5
+): (...args: T) => Promise<R> {
+  return async function (...args: T): Promise<R> {
+    for (let i = 0; i < retryCount; ++i) {
+      try {
+        return await fn(...args);
+      } catch (e) {
+        logger.warn(`Attempt #${i} wasn't successfull ${e.message}`);
+      }
+    }
+    throw new Error(`Attempt to run this wasn't successfull.`);
+  };
+}
+
 function getCleanFilenameFromPath(path: string): string {
   const parts = path.split('/');
   return parts[parts.length - 1];
