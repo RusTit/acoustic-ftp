@@ -26,6 +26,7 @@
   "homepage": "https://github.com/cclmarketing/ccl-acoustic-export#readme",
   "dependencies": {
     "@types/cron": "^1.7.2",
+    "@types/needle": "^2.5.1",
     "@types/node": "^14.14.2",
     "@types/ssh2-sftp-client": "^5.3.0",
     "@types/xml2js": "^0.4.5",
@@ -44,7 +45,6 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
-    "@types/needle": "^2.5.1",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "eslint": "^7.11.0",
